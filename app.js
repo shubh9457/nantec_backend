@@ -6,7 +6,7 @@ const uuid = require('uuid').v4;
 
 const application = express();
 
-console.info(process.env);
+console.log(process.env);
 
 mongoose.connect(`mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@${process.env.MONGO_CLUSTER}/${process.env.DB_NAME}?retryWrites=true&w=majority`, (err) => {
     if (err) {
