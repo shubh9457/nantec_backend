@@ -6,7 +6,7 @@ const uuid = require('uuid').v4;
 
 const application = express();
 
-mongoose.connect('mongodb://shubhsaxena:%40Nantec123@cluster0.t88lk.mongodb.net/nantec_db?retryWrites=true&w=majority', (err) => {
+mongoose.connect('mongodb+srv://shubhsaxena:%40Nantec123@cluster0.t88lk.mongodb.net/nantec_db?retryWrites=true&w=majority', (err) => {
     if (err) {
         throw err;
     }
