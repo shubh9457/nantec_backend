@@ -6,9 +6,9 @@ const uuid = require('uuid').v4;
 
 const application = express();
 
-console.log(process.env);
+const MONGO_URI = `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@${process.env.MONGO_CLUSTER}/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
-mongoose.connect(`mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@${process.env.MONGO_CLUSTER}/${process.env.DB_NAME}?retryWrites=true&w=majority`, (err) => {
+mongoose.connect(MONGO_URI, (err) => {
     if (err) {
         throw err;
     }
@@ -47,6 +47,11 @@ application.use(bodyParser.json({
 
 application.get('/posts', async (req, res, next) => {
     const [start, end] = JSON.parse(req.query.range);
+    if (start > end) {
+        return res.status(400).send({
+            customCode: 'BAD_REQUEST'
+        });
+    }
     const rawFilterCondition = JSON.parse(req.query.filter);
     const [sortBy, sortOrder] = JSON.parse(req.query.sort);
 
@@ -67,8 +72,13 @@ application.get('/posts', async (req, res, next) => {
     const posts = await postsModel.find(parsedConditions).skip(start).limit(end - start + 1).sort({[`${sortBy}`]: sortOrder.toLowerCase()});
     const length = await postsModel.count(parsedConditions);
 
+    if (!posts.length) {
+        posts = [{id: "dummy", title: "dummy", body: "dummy"}];
+        length = 1;
+    }
+
     return res.set({
-        'Content-Range': `posts=${start}-${end}/${length}`,
+        'Content-Range': `posts=${Math.min(start, length)}-${Math.min(end, length)}/${length}`,
         'Access-Control-Expose-Headers': 'Content-Range'
     }).send(posts || []);
 });
