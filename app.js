@@ -74,8 +74,8 @@ application.get('/posts', async (req, res, next) => {
     const length = await postsModel.count(parsedConditions);
 
     return res.set({
-        // 'Content-Range': `posts=${Math.min(start, length)}-${Math.min(end, length)}/${length}`,
-        // 'Access-Control-Expose-Headers': 'Content-Range'
+        'Content-Range': `posts=${Math.min(start, length)}-${Math.min(end, length)}/${length}`,
+        'Access-Control-Expose-Headers': 'Content-Range'
     }).send(posts || []);
 });
 
