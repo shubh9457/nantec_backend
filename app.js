@@ -7,6 +7,7 @@ const uuid = require('uuid').v4;
 const application = express();
 
 const MONGO_URI = `mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@${process.env.MONGO_CLUSTER}/${process.env.DB_NAME}?retryWrites=true&w=majority`;
+// const MONGO_URI = `mongodb://localhost:27017/test_db1`;
 
 mongoose.connect(MONGO_URI, (err) => {
     if (err) {
@@ -73,8 +74,8 @@ application.get('/posts', async (req, res, next) => {
     const length = await postsModel.count(parsedConditions);
 
     return res.set({
-        'Content-Range': `posts=${Math.min(start, length)}-${Math.min(end, length)}/${length}`,
-        'Access-Control-Expose-Headers': 'Content-Range'
+        // 'Content-Range': `posts=${Math.min(start, length)}-${Math.min(end, length)}/${length}`,
+        // 'Access-Control-Expose-Headers': 'Content-Range'
     }).send(posts || []);
 });
 
